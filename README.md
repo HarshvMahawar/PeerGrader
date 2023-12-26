@@ -9,5 +9,4 @@ python -m venv virenv
 cd PeerGrader
 pip install -r requirements.txt
 python manage.py runserver
-locahost/instructor_home/
 ```
