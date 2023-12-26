@@ -1,0 +1,64 @@
+<!-- create_rubrics.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Rubrics</title>
+</head>
+<body>
+    <h1>Create Rubrics for Assignment: {{ assignment.title }}</h1>
+
+    <form id="rubricsForm" method="post" action="{% url 'create_rubrics' assignment_id=assignment.id %}">
+        {% csrf_token %}
+
+        <!-- Existing input fields -->
+        <label for="question_number">Question Number:</label>
+        <input type="number" name="question_number" required>
+
+        <label for="max_marks">Maximum Marks:</label>
+        <input type="number" name="max_marks" required>
+
+        <!-- Display existing rubrics -->
+        <ul>
+            {% for rubric in rubrics %}
+                <li>
+                    {{ rubric.question_number }} - Max Marks: {{ rubric.max_marks }}
+                    <input type="hidden" name="question_number_{{ rubric.question_number }}" value="{{ rubric.question_number }}">
+                    <input type="hidden" name="max_marks_{{ rubric.question_number }}" value="{{ rubric.max_marks }}">
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Button to add a new question dynamically -->
+        <button type="button" onclick="addQuestion()">Add Question</button>
+
+        <!-- Separate button for final submission -->
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Script to handle adding questions dynamically -->
+    <script>
+        function addQuestion() {
+            // Create new input fields for the new question
+            var questionNumberInput = document.createElement('input');
+            questionNumberInput.type = 'number';
+            questionNumberInput.name = 'new_question_number';
+            questionNumberInput.placeholder = 'Enter Question Number';
+            questionNumberInput.required = true;
+
+            var maxMarksInput = document.createElement('input');
+            maxMarksInput.type = 'number';
+            maxMarksInput.name = 'new_max_marks';
+            maxMarksInput.placeholder = 'Enter Maximum Marks';
+            maxMarksInput.required = true;
+
+            // Append the new input fields to the form
+            document.getElementById('rubricsForm').appendChild(questionNumberInput);
+            document.getElementById('rubricsForm').appendChild(maxMarksInput);
+        }
+    </script>
+</body>
+</html>
+

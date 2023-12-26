@@ -1,0 +1,26 @@
+<!-- instructor_home.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Home</title>
+</head>
+<body>
+    <h1>Welcome, Instructor!</h1>
+
+    <div>
+        <h2>Actions:</h2>
+        <a href="{% url 'create_assignment' %}">
+            <button>Create New Assignments</button>
+        </a>
+        <a href="#">
+            <button>View Created Assignments</button>
+        </a>
+        <a href="#"> <!-- Empty link for requested reviews - update it later -->
+            <button>Requested Reviews</button>
+        </a>
+    </div>
+</body>
+</html>
