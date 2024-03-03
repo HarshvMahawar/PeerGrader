@@ -1,0 +1,30 @@
+{% extends 'classroom/base.html' %}
+{% load bootstrap4 %}
+{% block content %}
+<div class="container">
+  <div class="jumbotron">
+    <h1>Add Question</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      <input type="submit" class="btn btn-primary" value="Add Question">
+    </form>
+    {% if question_added %}
+      <div class="alert alert-success mt-3" role="alert">
+        Question added successfully.
+      </div>
+    {% endif %}
+    {% if questions_in_assignment %}
+      <h2>Previously Added Questions</h2>
+      <ul>
+        {% for question_in_assignment in questions_in_assignment %}
+          <li>{{ question_in_assignment.question.question_text }}</li>
+        {% endfor %}
+      </ul>
+
+    {% endif %}
+    <a href="{% url 'classroom:assignment_list' %}" class="btn btn-secondary mt-3">Close</a>
+  </div>
+</div>
+{% endblock %}
+

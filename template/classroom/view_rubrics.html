@@ -1,0 +1,21 @@
+{% extends 'classroom/base.html' %}
+{% block content %}
+<div class="container">
+  <div class="jumbotron">
+    <h1 class="display-4 text-center mb-4" style="font-family: 'Arial', sans-serif;">Rubrics for Assignment: {{ assignment }}</h1>
+
+    {% if questions %}
+      <div class="list-group">
+        {% for q, m in questions %}
+          <div class="list-group-item">
+            <h2 class="mb-1" style="font-family: 'Helvetica', sans-serif;">Question - {{ q }}</h2>
+            <p class="mb-1" style="font-family: 'Helvetica', sans-serif;">Marks - {{ m }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="lead text-center">No rubrics added yet.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
