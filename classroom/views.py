@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
+from .forms import MassAddStudentsForm
 from django.views.generic import (
     View,
     TemplateView,
@@ -625,3 +626,14 @@ def change_password(request):
 
 def p(request):
     return JsonResponse({"hello": "bye"})
+
+@login_required
+def mass_add_students(request, id=None):
+    if request.method == 'POST':
+        form = MassAddStudentsForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            # Add success message or redirect to another page
+    else:
+        form = MassAddStudentsForm()
+    return render(request, 'classroom/mass_add_students.html', {'form': form})
