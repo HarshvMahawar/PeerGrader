@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from .forms import MassAddStudentsForm
+import csv
+from django.contrib.auth.models import User
+from io import TextIOWrapper
 from django.views.generic import (
     View,
     TemplateView,
@@ -627,13 +630,84 @@ def change_password(request):
 def p(request):
     return JsonResponse({"hello": "bye"})
 
-@login_required
-def mass_add_students(request, id=None):
-    if request.method == 'POST':
-        form = MassAddStudentsForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            # Add success message or redirect to another page
+def mass_add_students_template(request):
+    return render(request,
+                  "classroom/mass_add_students.html")
+
+def mass_add_students(request):
+    if request.method == "POST":
+        csv_file = request.FILES.get('csv_file')
+       
+        if not csv_file:
+            return render(request, 'error.html', {'error': 'No CSV file uploaded'})
+
+        try:
+            # Wrap the file with TextIOWrapper and decode it as utf-8
+            csv_file_wrapper = TextIOWrapper(csv_file.file, encoding='utf-8')
+            reader = csv.DictReader(csv_file_wrapper)
+            print("\n\n\n\nsuccessfully got csv file\n\n\n\n")
+            for row in reader:
+                name = row.get('name')
+                # print(name+"\n\n\n\n")
+                roll_no = row.get('roll_no')
+                phone = row.get('phone')
+                email = row.get('email')
+                user = Student
+
+                if not all([name, roll_no, phone, email]):
+                    # Handle missing data
+                    print("Missing data for a student. Skipping...")
+                    continue
+
+                # Check if a student with the same email already exists
+                user, created = User.objects.get_or_create(username=email, email=email)
+
+                # Create a new Student instance
+                student = Student.objects.create(
+                    user=user,
+                    name=name,
+                    roll_no=roll_no,
+                    phone=phone,
+                    email=email
+                )
+                student.save()
+                print("SAVED SUCCESSFULLY \n\n\n\n\n\n\n\n\n")
+                # if created:
+                #     # Add logic to associate student with class
+                #     # For example: student.class = class_instance
+                #     student.save()
+                #     print("Student saved")
+        
+        except Exception as e:
+            print(e)
+            return render(request, 'classroom/mass_add_students_template.html', {'message': 'Error'})
+        
+        return render(request, 'classroom/mass_add_students_template.html', {'message': 'Students added successfully'})
     else:
-        form = MassAddStudentsForm()
-    return render(request, 'classroom/mass_add_students.html', {'form': form})
+        return render(request, 'classroom/mass_add_students_template.html')
+                # pass
+    #     if file.is_valid():
+    #         question = form.save(commit=False)
+
+    #         question.assignment = assignment
+
+    #         question.save()
+
+    #         # Fetch marks from the form
+    #         marks = form.cleaned_data["marks"]
+
+    #         # Save the question in the QuestionsInAssignment model with marks
+    #         question_in_assignment = QuestionsInAssignment(
+    #             question=question, assignment=assignment, marks=marks
+    #         )
+    #         question_in_assignment.save()
+
+    #         question_added = True
+    # else:
+    #     form = QuestionForm()
+
+    # return render(
+    #     request,
+    #     "classroom/add_question.html",
+    #     {"form": form, "assignment": assignment, "question_added": question_added},
+    # )
