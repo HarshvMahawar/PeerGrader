@@ -1,3 +1,5 @@
+import csv
+from io import TextIOWrapper
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from classroom.models import (
@@ -112,3 +114,31 @@ class QuestionsInAssignmentForm(forms.ModelForm):
     class Meta:
         model = QuestionsInAssignment
         fields = ["question"]
+
+class MassAddStudentsForm(forms.Form):
+    class Meta:
+        model = Student
+        fields = ["name","roll_no","phone","email"]
+    # csv_file = forms.FileField(label='CSV File')
+
+    # def save(self):
+    #     csv_file = TextIOWrapper(self.cleaned_data['csv_file'].file, encoding='utf-8')
+    #     reader = csv.DictReader(csv_file)
+    #     for row in reader:
+    #         # Assuming your CSV has columns like 'name', 'roll_no', 'phone', 'email'
+    #         name = row.get('name')
+    #         roll_no = row.get('roll_no')
+    #         phone = row.get('phone')
+    #         email = row.get('email')
+
+    #         # Check if a student with the same email already exists
+    #         student, created = Student.objects.get_or_create(email=email, defaults={'name': name, 'roll_no': roll_no, 'phone': phone})
+
+    #         # If a new student is created, you can add it to the class
+    #         if created:
+    #             # Add the student to the class (add your logic here)
+    #             # For example:
+    #             # student.class = 
+    #             student.save()
+    #             print("hello")
+    #             # pass

@@ -55,4 +55,6 @@ urlpatterns = [
     path("add_question/<int:assignment_id>/", views.add_question, name="add_question"),
     path("rubrics/<int:assignment_id>/", views.view_rubrics, name="view_rubrics"),
     path("print", views.p, name="pp"),
+    path("mass_add_students/", views.mass_add_students, name="mass_add_students"),
+    path("mass_add_students_template/", views.mass_add_students_template, name="mass_add_students_template"),
 ]
