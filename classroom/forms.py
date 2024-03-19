@@ -112,3 +112,6 @@ class QuestionsInAssignmentForm(forms.ModelForm):
     class Meta:
         model = QuestionsInAssignment
         fields = ["question"]
+
+class StudentCSVUploadForm(forms.Form):
+    csv_file = forms.FileField(label='Upload CSV file')

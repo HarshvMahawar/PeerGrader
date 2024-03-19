@@ -49,6 +49,9 @@ from django.db.models import Q
 from django.forms import formset_factory
 from django.http import JsonResponse
 
+import csv
+from django.shortcuts import render, redirect
+from .forms import StudentCSVUploadForm
 
 @login_required
 def add_question(request, assignment_id):
@@ -625,3 +628,47 @@ def change_password(request):
 
 def p(request):
     return JsonResponse({"hello": "bye"})
+
+def add_students_from_csv(request):
+    if request.method == 'POST':
+        form = StudentCSVUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            csv_file = form.cleaned_data['csv_file']
+            decoded_file = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded_file)
+            for row in reader:
+                name = row.get('username')
+                email = row.get('email')
+                roll_no = row.get('roll_no')
+                phone = row.get('phone')
+                password = "qqwweerr123"
+                # Creating user form data
+                user_form_data = {
+                    'username': name,
+                    'password1': password,
+                    'password2': password  # For confirmation
+                }
+                student_profile_form_data = {
+                    'name': name,
+                    'roll_no': roll_no,
+                    'phone': phone,
+                    'email': email,
+                }
+                user_form = UserForm(user_form_data)
+                student_profile_form = StudentProfileForm(student_profile_form_data)
+                if user_form.is_valid() and student_profile_form.is_valid():
+                    user = user_form.save()
+                    user.is_student = True
+                    user.save()
+
+                    profile = student_profile_form.save(commit=False)
+                    profile.user = user
+                    profile.save()
+
+                    registered = True
+                else:
+                    print(user_form.errors, student_profile_form.errors)
+            return redirect('classroom:students_list')  # Redirect to a success page
+    else:
+        form = StudentCSVUploadForm()
+    return render(request, 'classroom/add_student_from_csv.html', {'form': form})

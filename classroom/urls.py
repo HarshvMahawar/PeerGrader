@@ -54,5 +54,5 @@ urlpatterns = [
     path("change_password/", views.change_password, name="change_password"),
     path("add_question/<int:assignment_id>/", views.add_question, name="add_question"),
     path("rubrics/<int:assignment_id>/", views.view_rubrics, name="view_rubrics"),
-    path("print", views.p, name="pp"),
+    path("add_students_csv", views.add_students_from_csv, name="add_students_from_csv")
 ]
