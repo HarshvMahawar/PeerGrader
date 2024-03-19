@@ -629,6 +629,7 @@ def change_password(request):
 def p(request):
     return JsonResponse({"hello": "bye"})
 
+@login_required
 def add_students_from_csv(request):
     if request.method == 'POST':
         form = StudentCSVUploadForm(request.POST, request.FILES)
@@ -665,7 +666,14 @@ def add_students_from_csv(request):
                     profile.user = user
                     profile.save()
 
-                    registered = True
+                    try:
+                        teacher = request.user.Teacher
+                        student = profile
+                        # print(teacher,student)
+                        StudentsInClass.objects.create(teacher=teacher, student=student)
+                        registered = True
+                    except Exception as e:
+                        print("Error:", e)
                 else:
                     print(user_form.errors, student_profile_form.errors)
             return redirect('classroom:students_list')  # Redirect to a success page
