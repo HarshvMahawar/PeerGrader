@@ -1,16 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Students from CSV</title>
-</head>
-<body>
-    <h1>Add Students from CSV</h1>
-    <form method="post" enctype="multipart/form-data" action="{% url 'classroom:add_students_from_csv' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload CSV</button>
+{% extends 'classroom/base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h1>Add Students</h1>
+    <form method="post" action="{% url 'classroom:add_students_from_csv' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="csv_file">Upload CSV File:</label>
+        <input type="file" class="form-control-file" id="csv_file" name="csv_file">
+      </div>
+      <button type="submit" class="btn btn-primary">Upload</button>
     </form>
-</body>
-</html>
+    {% if student_added %}
+      <div class="alert alert-success mt-3" role="alert">
+        Students added successfully.
+      </div>
+    {% endif %}
+    <a href="{% url 'classroom:students_list' %}" class="btn btn-secondary mt-3">Close</a>
+  </div>
+</div>
+{% endblock %}
